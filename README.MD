@@ -1,68 +1,80 @@
 # NewPunkyBot
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![discord.py](https://img.shields.io/badge/discord.py-v2.4%2B-purple.svg)](https://discordpy.readthedocs.io/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![discord.py](https://img.shields.io/badge/discord.py-v2.4%2B-5865F2.svg?logo=discord&logoColor=white)](https://discordpy.readthedocs.io/)
+[![Status](https://img.shields.io/badge/Status-WIP-orange.svg)]
+[![Issues](https://img.shields.io/github/issues/Punkyherisson/NewPunkyBot?logo=github)](https://github.com/Punkyherisson/NewPunkyBot/issues)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **Bot Discord modulaire pour apprendre Python**  
-Bot personnel polyvalent : modération, productivité, jeux, langues, GitHub.  
+**Multi-bots spécialisés** : organisation, modération, jeux, langues.  
 **Auteur** : Emmanuel (Punkyherisson) | **Serveur cible** : Punkyherisson + multi-serveurs
 
 ## 🎯 Objectifs
 
-NewPunkyBot est un **projet d'apprentissage Python concret** via développement d'un bot Discord modulaire (cogs).  
-Démarche **agile** : v0.1 simple/testable → v1.0 complète.
+NewPunkyBot est un **projet d'apprentissage Python concret** via bots Discord modulaires.  
+**Approche multi-bots** : 1 bot = 1 mission (débutant-friendly, sur plusieurs mois).
 
 **Priorités :**
-- Progresser en Python (discord.py, cogs, APIs externes)
-- Bot utilisable sur serveur Punkyherisson + autres serveurs
-- Architecture sécurisée (pouvoirs < admin)
+- Progresser Python (discord.py, parsing, APIs)
+- Multi-serveurs (Punkyherisson principal)
+- Démarche agile : v0.1 simple → v1.0 complète
+- Sécurité : pouvoirs < admin
 
-## 🚀 Fonctionnalités (Spécifications v0.2)
+## 🚀 Fonctionnalités (Spécifications v0.3)
 
-### 🛡️ **Modération & Administration**
-- Avertir/mute/kick/ban/temp-ban automatique
-- Filtrage spam/injurieux/raciste
-- Logs détaillés quotidiens
-- Système de niveaux (permissions + expertise domaine)
-- Liens rapides (règles, forums, ressources)
+### **Bot 1 : Organisation (v0.1 Priorité IMMÉDIATE)**
+!ProchainCours Python 2026-02-14 14:00 Presenciel Aless
+→ Crée événement Discord 🐍 + Aless/toi
 
-### 📅 **Productivité & Organisation** 
-- Rappels cours/devoirs/to-do lists
-- Sondages, votes, collecte d'idées
-- Agendas partagés par personne/sujet
-- Statistiques temps passé (salons/jeux)
+!ProchainDevoir Japonais "Leçon 12 Minna" [lien]
+→ Événement devoir + 🇯🇵
 
-### 🎮 **Social & Développement Personnel**
-- Jeux texte : trivia, pendu, RPG simple
-- Système XP (jeux + tâches accomplies)
-- Musique Spotify (abonnement famille)
-- Mini-traductions : anglais, allemand, espagnol, japonais
-- Exercices : yoga, sport (krav maga), méditation
+text
 
-### 🔌 **Intégrations Externes**
-- GitHub : push/issues/PR → apprendre Git
-- Météo Lyon (prévisions ski)
-- Conversationnel langues (Talkpal/Duolingo style)
+### 🛡️ **Bot 2 : Modération (v0.2)**
+- Avertir/mute/kick/ban auto
+- Filtrage injurieux/spam
+- Logs quotidiens
+- Niveaux utilisateurs (permissions/expertise)
 
-## 📋 Roadmap
+### 🎮 **Bot 3 : Social/Jeux (v1.0)**
+- Trivia, pendu, RPG texte
+- XP anti-procrastination
+- Spotify, traductions (anglais/allemand/espagnol/japonais)
+- Yoga/krav maga/méditation
 
-| Version | Statut | Features principales |
-|---------|--------|---------------------|
-| **v0.1** | ⏳ TODO | `!ping`, `!info`, logs, liens rapides |
-| **v0.2** | ⏳ TODO | Modération (`!mute`, `!kick`), filtrage |
-| **v0.3** | 🔄 Plan | Productivité (to-do, rappels, météo) |
-| **v1.0** | 🔮 Futur | Jeux, XP, Spotify, langues avancées |
+### 📅 **Bot 4 : Productivité/Intégrations (v1.0+)**
+- GitHub push/issues/PR
+- Météo Lyon (ski)
+- Conversationnel langues (Talkpal-style)
 
-## 🛠️ Architecture
+## 📋 Roadmap Multi-bots
 
-NewPunkyBot/
-├── bot/
-│ ├── main.py # Chargeur principal
-│ └── cogs/ # Modules spécialisés
-│ ├── basic.py # !ping, !info
-│ ├── moderation.py # !kick, !mute
-│ └── productivite.py # !todo, !rappel
-├── docs/ # Spécifications et utilisation Perplexity
-├── requirements.txt
+| Version | Bot | Statut | Features clés |
+|---------|-----|--------|---------------|
+| **v0.1** | Organisation | ⏳ TODO | `!ProchainCours`, `!ProchainDevoir` |
+| **v0.2** | Modération | ⏳ Plan | `!kick`, `!mute`, logs |
+| **v0.3** | Social | 🔄 Plan | Jeux, XP, Spotify |
+| **v1.0** | Intégrations | 🔮 Futur | GitHub, météo, chat langues |
+
+## 🗂️ Arborescence Répertoires (v0.3)
+
+NewPunkyBot/ (Repo parent)
+├── bot-organisation/ # v0.1 PRIORITÉ
+│ ├── main.py
+│ ├── requirements.txt
+│ └── .env.example
+├── bot-moderation/ # v0.2
+│ ├── main.py
+│ └── requirements.txt
+├── docs/
+│ ├── 01-spec-v0.3.md # Cette spec
+│ ├── 00-echanges-perplexity.md
+│ └── 02-roadmap.md
+├── .gitignore
+├── requirements-dev.txt # pytest, etc.
 └── README.md
+## 📚 Documentation
+- [Spécifications v0.3](Doc/SpecNewPunkyBot_03)
+- [Références Discord.py](Doc/References/discord-py.md)
