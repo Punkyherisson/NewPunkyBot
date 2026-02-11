@@ -76,5 +76,5 @@ NewPunkyBot/ (Repo parent)
 ├── requirements-dev.txt # pytest, etc.
 └── README.md
 ## 📚 Documentation
-- [Spécifications v0.3](Doc/SpecNewPunkyBot_03)
+- [Spécifications v0.3](Doc/SpecNewPunkyBot_03.md)
 - [Références Discord.py](Doc/References/discord-py.md)
