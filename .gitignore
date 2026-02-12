@@ -1,0 +1,42 @@
+# Environnements virtuels
+NewPunkyBotEnv/
+.venv/
+venv/
+env/
+ENV/
+
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Dist
+dist/
+build/
+*.egg-info/
+
+# VSCode
+.vscode/settings.json
+.vscode/launch.json  # Si tokens dedans
+
+# IDEs
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Token files
+token*
+config.py  # Si token dedans
