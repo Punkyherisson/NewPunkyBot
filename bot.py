@@ -8,6 +8,7 @@ from datetime import datetime, timezone, timedelta
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from zoneinfo import ZoneInfo  # ← NOUVEAU
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -27,7 +28,9 @@ EMOJI_MATIERE = {
 }
 
 # Offset Paris (UTC+1 hiver ; +2 été : change manuellement si besoin)
-PARIS_OFFSET = timedelta(hours=1)
+# PARIS_OFFSET = timedelta(hours=1)
+# AJOUTE ÇA À LA PLACE
+PARIS_TZ = ZoneInfo("Europe/Paris")  # ← NOUVEAU
 
 @bot.event
 async def on_ready():
@@ -63,9 +66,16 @@ async def prochain_cours(
         return
 
     # Parsing date / heure (heure locale Paris → UTC)
-    try:
+    """ try:
         dt_paris = datetime.strptime(f"{date_str} {heure_str}", "%Y-%m-%d %H:%M")
         dt_utc = dt_paris.replace(tzinfo=timezone.utc) - PARIS_OFFSET  # Paris → UTC
+    except ValueError: """
+
+    # Parsing date / heure (heure locale Paris → UTC)
+    try:
+        dt_naive = datetime.strptime(f"{date_str} {heure_str}", "%Y-%m-%d %H:%M")
+        dt_paris = dt_naive.replace(tzinfo=PARIS_TZ)  # ← Paris time
+        dt_utc = dt_paris.astimezone(timezone.utc)    # ← Convert to UTC
     except ValueError:
         await ctx.send(
             "❌ Format de date/heure invalide.\n"
@@ -114,7 +124,7 @@ async def prochain_cours(
         f"📅 Début (heure de Paris) : `{dt_paris:%Y-%m-%d %H:%M}`\n"
         f"🔗 Lien : {event.url}\n"
         f"ℹ️ Pour l'annuler : `!AnnulerCours {event.id}`\n"
-        f"⚠️ Offset UTC+1 (hiver). Été : +1h."
+
     )
 
 # ---------- Commande !AnnulerCours ----------
