@@ -1,5 +1,5 @@
 # Pour utiliser ce code, vous devez d'abord créer un bot sur le portail des développeurs Discord et obtenir son token.
-# Ensuite, vous devez installer les bibliothèques nécessaires : pip install discord.py python-dotenv
+# Ensuite, vous devez installer les bibliothèques nécessaires : pip install discord.py python-dotenv tzdata
 # Créez un fichier .env avec : DISCORD_TOKEN=your_token_here
 # Le bot répond à "bonjour"/"konnichiwa" et gère les commandes !ProchainCours et !AnnulerCours pour les événements.
 
@@ -8,10 +8,13 @@ from datetime import datetime, timezone, timedelta
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from zoneinfo import ZoneInfo  # ← NOUVEAU
+from zoneinfo import ZoneInfo
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+VOICE_CHANNEL_ID = 1341756315487436830  # ID du salon vocal "Lounge" pour les cours en présentiel
+Lounge=1341756315487436830
+SalleEtude=1341756315877376072
 
 # Intents
 intents = discord.Intents.default()
@@ -27,10 +30,7 @@ EMOJI_MATIERE = {
     "japonais": "🇯🇵",
 }
 
-# Offset Paris (UTC+1 hiver ; +2 été : change manuellement si besoin)
-# PARIS_OFFSET = timedelta(hours=1)
-# AJOUTE ÇA À LA PLACE
-PARIS_TZ = ZoneInfo("Europe/Paris")  # ← NOUVEAU
+PARIS_TZ = ZoneInfo("Europe/Paris")
 
 @bot.event
 async def on_ready():
@@ -47,7 +47,7 @@ async def prochain_cours(
     prof: str,
 ):
     """
-    !ProchainCours Python 2026-02-14 15:00 Distanciel Aless
+    !ProchainCours Python 2026-03-15 15:00 Distanciel Aless
     Crée un événement de cours sur le serveur.
     """
     # Normaliser les entrées
@@ -61,53 +61,61 @@ async def prochain_cours(
     if format_norm not in ("presenciel", "distanciel"):
         await ctx.send(
             "❌ Format invalide. Utilise soit `Presenciel` soit `Distanciel`.\n"
-            "Exemple : `!ProchainCours Python 2026-02-14 15:00 Distanciel Aless`"
+            "Exemple : `!ProchainCours Python 2026-03-15 15:00 Distanciel Aless`"
         )
         return
 
     # Parsing date / heure (heure locale Paris → UTC)
-    """ try:
-        dt_paris = datetime.strptime(f"{date_str} {heure_str}", "%Y-%m-%d %H:%M")
-        dt_utc = dt_paris.replace(tzinfo=timezone.utc) - PARIS_OFFSET  # Paris → UTC
-    except ValueError: """
-
-    # Parsing date / heure (heure locale Paris → UTC)
     try:
         dt_naive = datetime.strptime(f"{date_str} {heure_str}", "%Y-%m-%d %H:%M")
-        dt_paris = dt_naive.replace(tzinfo=PARIS_TZ)  # ← Paris time
-        dt_utc = dt_paris.astimezone(timezone.utc)    # ← Convert to UTC
+        dt_paris = dt_naive.replace(tzinfo=PARIS_TZ)
+        dt_utc = dt_paris.astimezone(timezone.utc)
     except ValueError:
         await ctx.send(
             "❌ Format de date/heure invalide.\n"
-            "Attendu : `YYYY-MM-DD HH:MM` (ex: `2026-02-14 15:00`).\n"
-            "Tu as peut-être mis `14/02/2026` au lieu de `2026-02-14`."
+            "Attendu : `YYYY-MM-DD HH:MM` (ex: `2026-03-15 15:00`).\n"
+            "Tu as peut-être mis `15/03/2026` au lieu de `2026-03-15`."
         )
         return
 
     # Construire le nom de l'événement
     name = f"{emoji} {matiere} avec {prof}"
 
-    # Params spécifiques au format ✅ FIXÉ
-    channel = None
-    location = None
-    if format_norm == "presenciel":
-        entity_type = discord.EntityType.voice
-        channel = ctx.channel  # Channel actuel pour présentiel
-    else:  # distanceliel → EXTERNAL (channel=None obligatoire)
-        entity_type = discord.EntityType.external
-        location = "En ligne"
-
     try:
-        event = await ctx.guild.create_scheduled_event(
-            name=name,
-            description=f"Cours de {matiere} avec {prof} ({format_str}). Créé par {ctx.author.display_name}.",
-            start_time=dt_utc,
-            end_time=None,
-            privacy_level=discord.PrivacyLevel.guild_only,
-            entity_type=entity_type,
-            channel=channel,  # None pour distanceliel
-            location=location,
-        )
+        if format_norm == "presenciel":
+        # Présentiel : VOICE channel fixe (Lounge)
+            print("DEBUG: Entré présenciel")  # ← 1
+            channel = bot.get_channel(VOICE_CHANNEL_ID)
+            print(f"DEBUG: Channel={channel}")
+            print(f"DEBUG: Tous les voice channels: {[ch.name+'('+str(ch.id)+')' for ch in ctx.guild.voice_channels]}")
+            if not channel or not isinstance(channel, discord.VoiceChannel):
+                print("DEBUG: Channel invalide")
+                await ctx.send("❌ Salon 'Lounge' non trouvé ! Vérifie VOICE_CHANNEL_ID.")
+                return
+            # Présentiel : VOICE + channel OBLIGATOIRE
+
+            print("DEBUG: Création event...")  # ← 3
+            print(f"DEBUG: Création avec guild={ctx.guild.name}, channel={channel.name}({channel.id})")
+            event = await ctx.guild.create_scheduled_event(
+                name=name,
+                description=f"Cours de {matiere} avec {prof} ({format_str}). Créé par {ctx.author.display_name}.",
+                start_time=dt_utc,
+                end_time=None,
+                privacy_level=discord.PrivacyLevel.guild_only,
+                entity_type=discord.EntityType.stage_voice,  # ← Stage voice
+                channel=ctx.channel,  # ← OBLIGATOIRE pour voice
+            )
+        else:
+            # Distanciel : EXTERNAL + location OBLIGATOIRE
+            event = await ctx.guild.create_scheduled_event(
+                name=name,
+                description=f"Cours de {matiere} avec {prof} ({format_str}). Créé par {ctx.author.display_name}.",
+                start_time=dt_utc,
+                end_time=dt_utc + timedelta(hours=2),  # ← 2h pour external,
+                privacy_level=discord.PrivacyLevel.guild_only,
+                entity_type=discord.EntityType.external,
+                location="En ligne",  # ← OBLIGATOIRE pour external
+            )
     except discord.Forbidden:
         await ctx.send(
             "❌ Permissions manquantes :\n"
@@ -123,8 +131,7 @@ async def prochain_cours(
         f"✅ Événement créé : **{event.name}** (ID: `{event.id}`)\n"
         f"📅 Début (heure de Paris) : `{dt_paris:%Y-%m-%d %H:%M}`\n"
         f"🔗 Lien : {event.url}\n"
-        f"ℹ️ Pour l'annuler : `!AnnulerCours {event.id}`\n"
-
+        f"ℹ️ Pour l'annuler : `!AnnulerCours {event.id}`"
     )
 
 # ---------- Commande !AnnulerCours ----------
