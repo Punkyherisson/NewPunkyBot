@@ -102,11 +102,12 @@ async def prochain_cours(
                 start_time=dt_utc,
                 end_time=None,
                 privacy_level=discord.PrivacyLevel.guild_only,
-                entity_type=discord.EntityType.stage_voice,  # ← Stage voice
-                channel=ctx.channel,  # ← OBLIGATOIRE pour voice
+                entity_type=discord.EntityType.voice,  # ← Ston revient a voice
+                channel=channel,  # ← OBLIGATOIRE pour voice
             )
         else:
             # Distanciel : EXTERNAL + location OBLIGATOIRE
+
             event = await ctx.guild.create_scheduled_event(
                 name=name,
                 description=f"Cours de {matiere} avec {prof} ({format_str}). Créé par {ctx.author.display_name}.",
