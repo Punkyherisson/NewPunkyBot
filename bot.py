@@ -10,9 +10,11 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from zoneinfo import ZoneInfo
 
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 VOICE_CHANNEL_ID = 1341756315487436830  # ID du salon vocal "Lounge" pour les cours en présentiel
+SERVER_ID = 1341756314967085096  # ID du serveur Discord
 Lounge=1341756315487436830
 SalleEtude=1341756315877376072
 
