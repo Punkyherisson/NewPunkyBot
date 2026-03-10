@@ -9,6 +9,8 @@ from zoneinfo import ZoneInfo
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
+SERVER_ID = 1341756314967085096  # remplace par l’ID de ton serveur
+
 VOICE_CHANNEL_ID = 1341756315487436830
 Lounge = 1341756315487436830
 SalleEtude = 1341756315877376072
